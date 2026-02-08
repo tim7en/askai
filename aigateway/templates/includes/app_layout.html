@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar d-none d-md-flex flex-column py-3">
+    <div class="px-3 mb-4">
+      <a href="{% url 'web:dashboard' %}" class="text-decoration-none">
+        <strong class="fs-5 text-dark">⚡ AIGateway</strong>
+      </a>
+      {% if org %}
+      <div class="text-muted small mt-1">{{ org.name }}</div>
+      {% endif %}
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'web:dashboard' %}">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'playground' %}active{% endif %}" href="{% url 'web:playground' %}">Playground</a></li>
+      <li class="nav-item"><a class="nav-link {% if 'template' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'web:templates' %}">Templates</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'usage' %}active{% endif %}" href="{% url 'web:usage' %}">Usage</a></li>
+      <li class="nav-item"><a class="nav-link {% if 'provider' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'web:providers' %}">Providers</a></li>
+      <li class="nav-item"><a class="nav-link {% if 'member' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'web:members' %}">Members</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'billing' %}active{% endif %}" href="{% url 'web:billing' %}">Billing</a></li>
+      <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'web:settings' %}">Settings</a></li>
+    </ul>
+    <div class="mt-auto px-3 pt-3 border-top">
+      <div class="small text-muted mb-1">{{ request.user.email }}</div>
+      <a href="{% url 'accounts:logout' %}" class="small text-danger text-decoration-none">Sign out</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="main-content">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

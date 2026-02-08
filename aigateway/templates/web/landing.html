@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}AIGateway UZ – Unified AI Access{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+    <div>
+      <a href="{% url 'accounts:login' %}" class="btn btn-outline-dark btn-sm me-2">Log in</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-dark btn-sm">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow-1 d-flex align-items-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center py-5">
+        <h1 class="display-5 fw-bold mb-3">One interface.<br>Every AI provider.</h1>
+        <p class="lead text-muted mb-4">
+          Access OpenAI, Anthropic, Google AI and more through a single, compliant gateway.<br>
+          Bring your own API keys or use our managed access. Built for organizations in Uzbekistan.
+        </p>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-dark btn-lg px-5">Get started free</a>
+        <p class="text-muted small mt-3">No credit card required · BYO keys supported</p>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-3 mb-5">
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h5 class="fw-semibold">🔑 BYO Keys</h5>
+          <p class="text-muted small mb-0">Use your own API keys. Pay providers directly. We just route and log.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h5 class="fw-semibold">🏢 Managed Access</h5>
+          <p class="text-muted small mb-0">We provide API access. You pay us locally in UZS. Simple invoicing.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h5 class="fw-semibold">📊 Full Visibility</h5>
+          <p class="text-muted small mb-0">Track every request, token, and cost. Export usage. Set spending caps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="py-3 border-top bg-white">
+  <div class="container d-flex justify-content-between small text-muted">
+    <span>© 2025 AIGateway UZ</span>
+    <div>
+      <a href="{% url 'legal:terms' %}" class="text-muted me-3">Terms</a>
+      <a href="{% url 'legal:privacy' %}" class="text-muted">Privacy</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}

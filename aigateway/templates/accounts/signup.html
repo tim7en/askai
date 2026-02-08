@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Sign Up – AIGateway UZ{% endblock %}
+{% block body %}
+<div class="container" style="max-width: 420px; margin-top: 10vh;">
+  <div class="text-center mb-4">
+    <a href="/" class="text-decoration-none text-dark"><strong class="fs-4">⚡ AIGateway UZ</strong></a>
+    <h2 class="h5 mt-3">Create your account</h2>
+  </div>
+  <div class="card p-4">
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label small fw-medium">{{ field.label }}</label>
+        <input type="{{ field.field.widget.input_type|default:'text' }}"
+               name="{{ field.html_name }}"
+               value="{{ field.value|default:'' }}"
+               class="form-control {% if field.errors %}is-invalid{% endif %}"
+               {% if field.field.required %}required{% endif %}>
+        {% for error in field.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <button type="submit" class="btn btn-dark w-100">Sign up</button>
+    </form>
+  </div>
+  <p class="text-center small text-muted mt-3">
+    Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Billing – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="h4 mb-0">Billing</h1>
+</div>
+
+{% if subscriptions %}
+<div class="card p-3 mb-4">
+  <div class="small fw-medium mb-2">Active Subscription</div>
+  {% for s in subscriptions %}
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <span class="fw-medium">{{ s.plan.name }}</span>
+      <span class="text-muted small ms-2">${{ s.plan.monthly_fee_usd }}/mo</span>
+    </div>
+    <span class="badge {% if s.status == 'ACTIVE' %}bg-success{% else %}bg-warning{% endif %}">{{ s.status }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<h2 class="h6 mb-3">Invoices</h2>
+{% if invoices %}
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead class="table-light">
+        <tr><th>Period</th><th>Amount</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for inv in invoices %}
+        <tr>
+          <td class="small">{{ inv.period_start }} – {{ inv.period_end }}</td>
+          <td>${{ inv.amount_usd }}</td>
+          <td><span class="badge {% if inv.status == 'PAID' %}bg-success{% elif inv.status == 'ISSUED' %}bg-primary{% else %}bg-secondary{% endif %}">{{ inv.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="card">
+  <div class="empty-state">
+    <p class="mb-1">No invoices yet</p>
+    <p class="small text-muted">Invoices appear here for Managed Access plans.</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

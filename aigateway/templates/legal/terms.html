@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Terms of Service – AIGateway UZ{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+  </div>
+</nav>
+<div class="container py-5" style="max-width: 720px;">
+  <h1 class="h3 mb-4">Terms of Service</h1>
+  <p class="text-muted small">Last updated: January 2025</p>
+
+  <h2 class="h6 mt-4">1. Service Description</h2>
+  <p class="small">AIGateway UZ provides a unified interface for organizations to access AI provider APIs (OpenAI, Anthropic, Google, etc.). Access is provided exclusively through official provider APIs and authorized aggregators.</p>
+
+  <h2 class="h6 mt-4">2. Access Modes</h2>
+  <p class="small"><strong>BYO Keys:</strong> You bring your own API keys and pay providers directly. AIGateway UZ routes and logs requests but does not resell API access.</p>
+  <p class="small"><strong>Managed Access:</strong> AIGateway UZ provides API access through platform keys. You pay AIGateway UZ for usage. Keys are never transferred to customers.</p>
+
+  <h2 class="h6 mt-4">3. Acceptable Use</h2>
+  <p class="small">You agree not to use the service for illegal purposes, spam, harassment, or activities that violate provider terms. Rate limits and spending caps are enforced.</p>
+
+  <h2 class="h6 mt-4">4. Data & Privacy</h2>
+  <p class="small">Prompts and responses are logged for usage tracking. Credentials are encrypted at rest. Data retention is configurable per organization policy.</p>
+
+  <h2 class="h6 mt-4">5. Limitation of Liability</h2>
+  <p class="small">AIGateway UZ is provided "as is". We are not liable for provider outages, response accuracy, or costs incurred through provider APIs.</p>
+</div>
+{% endblock %}

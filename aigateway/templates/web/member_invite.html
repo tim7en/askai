@@ -1,0 +1,27 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Invite Member – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <a href="{% url 'web:members' %}" class="small text-muted text-decoration-none">← Back to members</a>
+  <h1 class="h4 mt-2">Invite Team Member</h1>
+</div>
+
+<div class="card p-4" style="max-width: 500px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Email address</label>
+      <input type="email" name="email" class="form-control" required placeholder="colleague@company.uz">
+      <div class="form-text">The user must already have an AIGateway UZ account.</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Role</label>
+      <select name="role" class="form-select form-select-sm">
+        <option value="MEMBER">Member</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-dark">Send Invite</button>
+  </form>
+</div>
+{% endblock %}

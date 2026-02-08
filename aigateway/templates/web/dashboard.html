@@ -1,0 +1,59 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Dashboard – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4 mb-0">Dashboard</h1>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="text-muted small">Total Usage</div>
+      <div class="fs-4 fw-bold">{{ total_units|default:"0" }} <span class="text-muted small fw-normal">tokens</span></div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="text-muted small">Estimated Cost</div>
+      <div class="fs-4 fw-bold">${{ total_cost }}</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <div class="text-muted small">API Token</div>
+      <div class="text-truncate small font-monospace mt-1">{{ org.api_token|truncatechars:16 }}…</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+    <span class="fw-medium">Recent Requests</span>
+    <a href="{% url 'web:usage' %}" class="small text-decoration-none">View all →</a>
+  </div>
+  {% if recent_requests %}
+  <div class="table-responsive">
+    <table class="table table-sm mb-0">
+      <thead class="table-light">
+        <tr><th>Time</th><th>Provider</th><th>Model</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for req in recent_requests %}
+        <tr>
+          <td class="small">{{ req.created_at|timesince }} ago</td>
+          <td>{{ req.provider }}</td>
+          <td class="small">{{ req.model }}</td>
+          <td><span class="badge {% if req.status == 'OK' %}bg-success{% elif req.status == 'ERROR' %}bg-danger{% else %}bg-warning{% endif %}">{{ req.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p class="mb-2">No requests yet</p>
+    <a href="{% url 'web:playground' %}" class="btn btn-sm btn-outline-dark">Try the Playground</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

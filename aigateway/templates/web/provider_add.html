@@ -1,0 +1,35 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Add Credential – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <a href="{% url 'web:providers' %}" class="small text-muted text-decoration-none">← Back to providers</a>
+  <h1 class="h4 mt-2">Add Provider Credential</h1>
+</div>
+
+<div class="card p-4" style="max-width: 500px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Provider</label>
+      <select name="provider" class="form-select" required>
+        {% for p in providers %}
+        <option value="{{ p.id }}">{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Mode</label>
+      <select name="mode" class="form-select form-select-sm">
+        <option value="BYO">BYO – Bring Your Own Key</option>
+        <option value="MANAGED">Managed Access</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-medium">API Key</label>
+      <input type="password" name="api_key" class="form-control" required placeholder="sk-...">
+      <div class="form-text">Your key is encrypted at rest and never shared.</div>
+    </div>
+    <button type="submit" class="btn btn-dark">Save Credential</button>
+  </form>
+</div>
+{% endblock %}

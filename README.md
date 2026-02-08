@@ -1,176 +1,185 @@
-# AI File Analyzer
+# AIGateway UZ
 
-A Next.js web application that allows users to upload files or folders and generate AI-powered analysis reports based on custom prompts using the Z.AI API (GLM-4-32B model).
+A production-ready Django web app that provides a unified interface for organizations in Uzbekistan to access multiple AI providers (OpenAI, Anthropic, Google, etc.) through a single gateway.
 
 ## Features
 
-- 📁 **File & Folder Upload**: Upload individual files or entire folders for analysis
-- 🤖 **AI-Powered Analysis**: Uses Z.AI's GLM-4-32B model for intelligent file analysis
-- 📝 **Custom Prompts**: Write custom analysis prompts to get specific insights
-- 📊 **Detailed Reports**: Get comprehensive analysis reports for each file
-- 🎨 **Modern UI**: Clean, responsive interface built with Tailwind CSS
-- ⚡ **Fast Processing**: Efficient file processing and analysis
+- **Unified AI Gateway** – One API endpoint to access OpenAI, Anthropic, Google AI, and more
+- **BYO Keys Mode** – Organizations bring their own API keys; pay providers directly
+- **Managed Access Mode** – Platform provides API access; organizations pay locally
+- **Playground** – Interactive prompt runner with cost and token tracking
+- **Usage Analytics** – Track every request, export CSV, set spending caps
+- **Team Management** – RBAC with Owner/Admin/Member roles
+- **Credential Encryption** – Fernet-encrypted API keys at rest
+- **Billing** – Invoices, plans, manual bank transfer workflow
+- **Prompt Templates** – Save and reuse prompt configurations
+- **Clean UI** – Bootstrap 5 with a minimalist, professional design
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15 with TypeScript
-- **Styling**: Tailwind CSS
-- **AI Provider**: Z.AI API (GLM-4-32B model)
-- **File Handling**: Custom file processing utilities
-- **Deployment**: Vercel-ready
+- **Backend**: Python 3.12+, Django 5.x, Django REST Framework
+- **Database**: PostgreSQL (SQLite for development)
+- **Frontend**: Django templates + Bootstrap 5 (server-rendered)
+- **Security**: Fernet encryption, RBAC, CSRF, rate limiting
+- **Deployment**: Docker + docker-compose, Gunicorn + WhiteNoise
+- **Testing**: pytest + pytest-django
+- **Linting**: ruff
 
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- Z.AI API key
+- Python 3.12+
+- pip
 
-### Installation
+### Setup
 
-1. Clone the repository:
 ```bash
+# Clone the repo
 git clone <repository-url>
 cd askai
+
+# Install dependencies
+pip install django django-environ djangorestframework psycopg2-binary gunicorn whitenoise cryptography httpx django-ratelimit
+
+# Copy env file and configure
+cp .env.example .env
+# Edit .env – generate ENCRYPTION_KEY with:
+# python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+# Run migrations
+python manage.py migrate
+
+# Create superuser
+python manage.py createsuperuser
+
+# Seed demo data (demo user: demo@aigateway.uz / demo1234)
+python manage.py seed_demo
+
+# Run the development server
+python manage.py runserver
 ```
 
-2. Install dependencies:
+Open [http://localhost:8000](http://localhost:8000) in your browser.
+
+### Docker
+
 ```bash
-npm install
+docker-compose up --build
 ```
 
-3. Set up environment variables:
-Create a `.env.local` file in the root directory:
-```env
-ZAI_API_KEY=your_zai_api_key_here
-ZAI_API_URL=https://api.z.ai/v1/chat/completions
+The app will be available at http://localhost:8000.
+
+## Project Structure
+
+```
+aigateway/
+├── settings/          # base/dev/prod settings split
+├── apps/
+│   ├── accounts/      # Custom user model, signup/login
+│   ├── orgs/          # Organizations, memberships, policies
+│   ├── providers/     # Provider registry, models, credential encryption, adapters
+│   ├── ai_gateway/    # AIRequest model, unified router
+│   ├── prompt_templates/  # Saved prompt templates
+│   ├── usage/         # UsageEvent model
+│   ├── billing/       # Plans, subscriptions, invoices, payments
+│   ├── audit/         # AuditLog
+│   ├── web/           # Server-rendered pages (dashboard, playground, etc.)
+│   └── api/           # DRF API endpoints
+├── templates/         # Django HTML templates
+└── static/            # Static assets (CSS, JS, images)
+tests/
+├── test_encryption.py     # Credential encryption tests
+├── test_permissions.py    # RBAC/permissions tests
+├── test_routing.py        # AI routing & fallback tests
+└── test_usage.py          # Usage logging tests
 ```
 
-4. Run the development server:
-```bash
-npm run dev
-```
+## Pages
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Usage
-
-1. **Upload Files**: 
-   - Use the "Select Files" button to upload individual files
-   - Use the "Select Folder" button to upload an entire folder
-
-2. **Write Analysis Prompt**: 
-   - Enter a detailed prompt describing what you want to analyze
-   - Examples:
-     - "Analyze the code quality and suggest improvements"
-     - "Summarize the main functions and their purposes"
-     - "Find potential security issues"
-     - "Explain the project structure and dependencies"
-
-3. **Generate Report**: 
-   - Click "Analyze Files" to start the AI analysis
-   - Wait for the AI to process each file
-   - Review the detailed analysis reports
-
-## Supported File Types
-
-The application automatically detects and processes text-based files including:
-
-- Code files: `.js`, `.ts`, `.jsx`, `.tsx`, `.py`, `.java`, `.cpp`, `.c`, `.php`, `.rb`, `.go`, `.rs`, `.swift`, `.kt`, `.cs`
-- Web files: `.html`, `.css`, `.scss`, `.sass`, `.xml`
-- Data files: `.json`, `.yaml`, `.yml`, `.csv`, `.sql`
-- Documentation: `.md`, `.txt`, `.log`
-- Configuration: `.env`, `.config`, `.ini`, `.cfg`, `.dockerfile`
+| URL | Description |
+|-----|-------------|
+| `/` | Landing page |
+| `/auth/signup/` | Sign up |
+| `/auth/login/` | Sign in |
+| `/onboarding/` | Create organization |
+| `/app/` | Dashboard |
+| `/app/playground/` | AI Playground |
+| `/app/templates/` | Prompt templates |
+| `/app/usage/` | Usage analytics + CSV export |
+| `/app/providers/` | Provider & credential management |
+| `/app/members/` | Team management |
+| `/app/billing/` | Plans & invoices |
+| `/app/settings/` | Org policies (caps, retention, mode) |
+| `/legal/terms/` | Terms of Service |
+| `/legal/privacy/` | Privacy Policy |
 
 ## API Endpoints
 
-### POST /api/analyze
+All API endpoints require authentication via session or org API token (`Authorization: Bearer <token>`).
 
-Analyzes uploaded files using the Z.AI API.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/ai/generate` | Unified AI generation |
+| GET | `/api/v1/usage` | List usage events |
+| GET | `/api/v1/usage/export.csv` | Export usage CSV |
+| GET/POST | `/api/v1/templates` | List/create prompt templates |
+| GET/PUT/DELETE | `/api/v1/templates/<id>` | Template detail |
 
-**Request Body:**
+### Unified AI Generate
+
 ```json
+POST /api/v1/ai/generate
 {
-  "files": [
-    {
-      "name": "example.js",
-      "content": "file content here",
-      "path": "src/example.js",
-      "size": 1024,
-      "type": "application/javascript"
-    }
-  ],
-  "prompt": "Analyze this code for quality issues"
+  "task_type": "chat",
+  "input": "Explain quantum computing in simple terms",
+  "system": "You are a helpful teacher",
+  "preferred_provider": "openai",
+  "max_cost_usd": 0.20,
+  "stream": false
 }
 ```
 
 **Response:**
 ```json
 {
-  "success": true,
-  "results": [
-    {
-      "fileName": "example.js",
-      "filePath": "src/example.js",
-      "analysis": "AI analysis result here...",
-      "metadata": {
-        "size": 1024,
-        "type": "application/javascript"
-      }
-    }
-  ],
-  "message": "Successfully analyzed 1 files"
+  "output_text": "...",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "units_in": 15,
+  "units_out": 120,
+  "total_units": 135,
+  "cost_usd_estimate": "0.000097",
+  "request_id": "uuid",
+  "latency_ms": 1234
 }
 ```
 
-## Project Structure
+## Running Tests
 
-```
-src/
-├── app/
-│   ├── api/
-│   │   └── analyze/
-│   │       └── route.ts          # API endpoint for file analysis
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Home page
-├── components/
-│   └── FileUpload.tsx            # Main file upload and analysis component
-├── lib/
-│   ├── file-utils.ts             # File processing utilities
-│   └── zai-client.ts             # Z.AI API client
-└── types/
-    └── index.ts                  # TypeScript type definitions
+```bash
+# Install dev dependencies
+pip install pytest pytest-django factory-boy ruff
+
+# Run all tests
+python -m pytest tests/ -v
+
+# Run specific test suites
+python -m pytest tests/test_encryption.py -v
+python -m pytest tests/test_permissions.py -v
+python -m pytest tests/test_routing.py -v
+python -m pytest tests/test_usage.py -v
 ```
 
-## Environment Variables
+## Production Notes
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ZAI_API_KEY` | Your Z.AI API key for GLM-4-32B model | Yes |
-| `ZAI_API_URL` | Z.AI API endpoint URL | Yes |
-
-## Deployment
-
-The application is ready for deployment on Vercel:
-
-1. Push your code to a Git repository
-2. Connect your repository to Vercel
-3. Set the environment variables in Vercel dashboard
-4. Deploy
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit your changes: `git commit -am 'Add feature'`
-4. Push to the branch: `git push origin feature-name`
-5. Submit a pull request
+- Set `DJANGO_SETTINGS_MODULE=aigateway.settings.prod`
+- Use PostgreSQL (`DATABASE_URL`)
+- Set a strong `SECRET_KEY` and `ENCRYPTION_KEY`
+- Run with Gunicorn: `gunicorn aigateway.wsgi:application --bind 0.0.0.0:8000 --workers 3`
+- WhiteNoise serves static files; run `python manage.py collectstatic`
+- Optional: put Nginx in front for TLS termination
 
 ## License
 
 This project is licensed under the MIT License.
-
-## Support
-
-For support and questions, please open an issue in the GitHub repository.
