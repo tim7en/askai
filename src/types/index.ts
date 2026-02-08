@@ -27,3 +27,45 @@ export interface ApiResponse {
   results?: AnalysisResult[];
   error?: string;
 }
+
+// Chat types
+export type ChatProvider = 'openai' | 'anthropic';
+
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface ChatRequest {
+  messages: ChatMessage[];
+  provider: ChatProvider;
+  model?: string;
+  developerMode?: boolean;
+}
+
+export interface TokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+}
+
+export interface CostBreakdown {
+  baseCost: number;
+  margin: number;
+  totalCost: number;
+  currency: string;
+}
+
+export interface ChatResponse {
+  success: boolean;
+  content?: string;
+  error?: string;
+  usage?: TokenUsage;
+  cost?: CostBreakdown;
+  debug?: {
+    provider: string;
+    model: string;
+    latencyMs: number;
+    rawResponse?: unknown;
+  };
+}
