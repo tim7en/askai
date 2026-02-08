@@ -88,5 +88,11 @@ export function calculateCost(
   }
 
   const margin = totalCost - baseCost;
-  return { baseCost: parseFloat(baseCost.toFixed(6)), margin: parseFloat(margin.toFixed(6)), totalCost: parseFloat(totalCost.toFixed(6)) };
+
+  const round = (v: number) => parseFloat(v.toFixed(6));
+  return {
+    baseCost: round(baseCost),
+    margin: round(margin),
+    totalCost: round(totalCost),
+  };
 }

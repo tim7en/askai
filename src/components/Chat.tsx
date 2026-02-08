@@ -192,7 +192,10 @@ export default function Chat() {
         <div className="bg-gray-900 text-green-400 text-xs p-3 font-mono max-h-32 overflow-y-auto">
           {costInfo && (
             <div>
-              Cost: base=${costInfo.baseCost.toFixed(6)} + margin=${costInfo.margin.toFixed(6)} = ${costInfo.totalCost.toFixed(6)} {costInfo.currency}
+              Cost: base=${costInfo.baseCost.toFixed(6)}
+              {' + margin=$'}{costInfo.margin.toFixed(6)}
+              {' = $'}{costInfo.totalCost.toFixed(6)}
+              {' '}{costInfo.currency}
             </div>
           )}
           {debugInfo && (
