@@ -1,0 +1,39 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Settings – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="h4 mb-0">Organization Settings</h1>
+</div>
+
+<div class="card p-4" style="max-width: 600px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Default Mode</label>
+      <select name="mode_default" class="form-select form-select-sm">
+        <option value="BYO" {% if policy.mode_default == 'BYO' %}selected{% endif %}>BYO – Bring Your Own Keys</option>
+        <option value="MANAGED" {% if policy.mode_default == 'MANAGED' %}selected{% endif %}>Managed Access</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Monthly Spending Cap (USD)</label>
+      <input type="number" name="monthly_cap_usd" class="form-control form-control-sm" value="{{ policy.monthly_cap_usd }}" step="1" min="0">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" name="hard_cap" class="form-check-input" {% if policy.hard_cap %}checked{% endif %}>
+      <label class="form-check-label small">Hard cap – block requests when cap reached</label>
+    </div>
+    <div class="mb-3">
+      <label class="form-label small fw-medium">Data Retention (days)</label>
+      <input type="number" name="retention_days" class="form-control form-control-sm" value="{{ policy.retention_days }}" min="1">
+    </div>
+    <button type="submit" class="btn btn-dark">Save Settings</button>
+  </form>
+</div>
+
+<div class="card p-4 mt-4" style="max-width: 600px;">
+  <div class="small fw-medium mb-2">Organization API Token</div>
+  <div class="font-monospace bg-light rounded p-2 small">{{ org.api_token }}</div>
+  <p class="form-text">Use this token as <code>Authorization: Bearer &lt;token&gt;</code> for the Unified API.</p>
+</div>
+{% endblock %}

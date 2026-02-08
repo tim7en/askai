@@ -1,0 +1,91 @@
+{% extends "includes/app_layout.html" %}
+{% block title %}Playground – AIGateway UZ{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4 mb-0">Playground</h1>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label small fw-medium">Task Type</label>
+          <select name="task_type" class="form-select form-select-sm">
+            <option value="chat">Chat</option>
+            <option value="summarize">Summarize</option>
+            <option value="translate">Translate</option>
+            <option value="code">Code</option>
+            <option value="extract">Extract</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium">System Prompt <span class="text-muted">(optional)</span></label>
+          <textarea name="system" class="form-control form-control-sm" rows="2" placeholder="e.g. You are a helpful assistant.">{{ request.POST.system|default:"" }}</textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-medium">Input</label>
+          <textarea name="input" class="form-control" rows="5" required placeholder="Type your prompt here...">{{ request.POST.input|default:"" }}</textarea>
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col">
+            <label class="form-label small fw-medium">Provider</label>
+            <select name="preferred_provider" class="form-select form-select-sm">
+              <option value="">Auto (best available)</option>
+              {% for p in providers %}
+              <option value="{{ p.slug }}">{{ p.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <label class="form-label small fw-medium">Max Cost (USD)</label>
+            <input type="number" name="max_cost_usd" class="form-control form-control-sm" value="0.20" step="0.01" min="0.01">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Run Prompt</button>
+      </form>
+    </div>
+
+    {% if templates %}
+    <div class="card mt-3 p-3">
+      <div class="small fw-medium mb-2">Quick Templates</div>
+      {% for t in templates %}
+      <div class="d-inline-block me-1 mb-1">
+        <span class="badge bg-light text-dark border" style="cursor:pointer" title="{{ t.system_text }}">{{ t.name }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-6">
+    {% if result %}
+    <div class="card p-4">
+      <div class="d-flex justify-content-between mb-2">
+        <span class="small fw-medium">Response</span>
+        <span class="badge bg-success">{{ result.provider }} / {{ result.model }}</span>
+      </div>
+      <div class="bg-light rounded p-3 mb-3" style="white-space: pre-wrap; font-size: .875rem;">{{ result.output_text }}</div>
+      <div class="row g-2 text-center small text-muted">
+        <div class="col"><div class="fw-medium">{{ result.units_in }}</div>tokens in</div>
+        <div class="col"><div class="fw-medium">{{ result.units_out }}</div>tokens out</div>
+        <div class="col"><div class="fw-medium">${{ result.cost_usd_estimate }}</div>cost</div>
+        <div class="col"><div class="fw-medium">{{ result.latency_ms }}ms</div>latency</div>
+      </div>
+    </div>
+    {% elif error %}
+    <div class="alert alert-danger">
+      <strong>Error:</strong> {{ error }}
+    </div>
+    {% else %}
+    <div class="card">
+      <div class="empty-state">
+        <p class="mb-1">Response will appear here</p>
+        <p class="small text-muted">Run a prompt to see the AI response with cost breakdown.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

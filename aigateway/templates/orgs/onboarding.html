@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Create Organization – AIGateway UZ{% endblock %}
+{% block body %}
+<div class="container" style="max-width: 480px; margin-top: 10vh;">
+  <div class="text-center mb-4">
+    <strong class="fs-4">⚡ AIGateway UZ</strong>
+    <h2 class="h5 mt-3">Create your organization</h2>
+    <p class="text-muted small">This is the workspace where your team will manage AI access.</p>
+  </div>
+  <div class="card p-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Organization name</label>
+        <input type="text" name="name" class="form-control" placeholder="e.g. Acme Corp" required>
+      </div>
+      {% if form.errors %}
+      <div class="alert alert-danger small">{{ form.errors }}</div>
+      {% endif %}
+      <button type="submit" class="btn btn-dark w-100">Create organization</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

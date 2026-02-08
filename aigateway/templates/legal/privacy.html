@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy – AIGateway UZ{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+  </div>
+</nav>
+<div class="container py-5" style="max-width: 720px;">
+  <h1 class="h3 mb-4">Privacy Policy</h1>
+  <p class="text-muted small">Last updated: January 2025</p>
+
+  <h2 class="h6 mt-4">1. Information We Collect</h2>
+  <p class="small">We collect email addresses, organization names, and API usage metadata (tokens, costs, timestamps). Provider API keys are encrypted at rest.</p>
+
+  <h2 class="h6 mt-4">2. How We Use Information</h2>
+  <p class="small">Usage data is used for billing, analytics, and service improvement. We do not sell personal data to third parties.</p>
+
+  <h2 class="h6 mt-4">3. Data Security</h2>
+  <p class="small">All credentials are encrypted using Fernet symmetric encryption. We use HTTPS, CSRF protection, and secure cookie settings in production.</p>
+
+  <h2 class="h6 mt-4">4. Data Retention</h2>
+  <p class="small">Organizations can configure data retention periods. Default retention is 90 days.</p>
+
+  <h2 class="h6 mt-4">5. Contact</h2>
+  <p class="small">For privacy questions, contact us at privacy@aigateway.uz.</p>
+</div>
+{% endblock %}

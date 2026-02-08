@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Log In – AIGateway UZ{% endblock %}
+{% block body %}
+<div class="container" style="max-width: 420px; margin-top: 10vh;">
+  <div class="text-center mb-4">
+    <a href="/" class="text-decoration-none text-dark"><strong class="fs-4">⚡ AIGateway UZ</strong></a>
+    <h2 class="h5 mt-3">Sign in to your account</h2>
+  </div>
+  <div class="card p-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Email</label>
+        <input type="text" name="username" class="form-control" required autofocus>
+      </div>
+      <div class="mb-3">
+        <label class="form-label small fw-medium">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      {% if form.errors %}
+      <div class="alert alert-danger small">Invalid email or password.</div>
+      {% endif %}
+      <button type="submit" class="btn btn-dark w-100">Sign in</button>
+    </form>
+  </div>
+  <p class="text-center small text-muted mt-3">
+    Don't have an account? <a href="{% url 'accounts:signup' %}">Sign up</a>
+  </p>
+</div>
+{% endblock %}

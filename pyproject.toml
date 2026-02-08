@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "aigateway-uz"
+version = "0.1.0"
+description = "AIGateway UZ – unified AI provider access for organizations in Uzbekistan"
+authors = ["AIGateway UZ Team"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.1"
+djangorestframework = "^3.15"
+django-environ = "^0.11"
+psycopg2-binary = "^2.9"
+gunicorn = "^23.0"
+whitenoise = "^6.8"
+cryptography = "^44.0"
+httpx = "^0.28"
+django-ratelimit = "^4.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+pytest-django = "^4.9"
+ruff = "^0.9"
+factory-boy = "^3.3"
+pytest-httpx = "^0.35"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "aigateway.settings.dev"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
