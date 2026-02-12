@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Models – AIGateway UZ{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+    <div>
+      <a href="{% url 'landing' %}" class="btn btn-link btn-sm text-dark">Home</a>
+      <a href="{% url 'pricing' %}" class="btn btn-link btn-sm text-dark">Pricing</a>
+      <a href="{% url 'models_catalog' %}" class="btn btn-link btn-sm text-dark fw-semibold">Models</a>
+      <a href="{% url 'accounts:login' %}" class="btn btn-outline-dark btn-sm me-2">Log in</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-dark btn-sm">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow-1">
+  <div class="container py-5">
+    <div class="text-center mb-4">
+      <h1 class="display-5 fw-bold">Model catalog</h1>
+      <p class="lead text-muted">Browse all available models across providers.</p>
+    </div>
+
+    <!-- Filters -->
+    <form method="get" class="card p-3 mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Search</label>
+          <input type="text" name="search" class="form-control form-control-sm" placeholder="Model name or description" value="{{ search }}">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold">Provider</label>
+          <select name="provider" class="form-select form-select-sm">
+            <option value="">All providers</option>
+            {% for p in providers %}
+            <option value="{{ p.slug }}" {% if provider_filter == p.slug %}selected{% endif %}>{{ p.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold">Modality</label>
+          <select name="modality" class="form-select form-select-sm">
+            <option value="">All modalities</option>
+            {% for m in modalities %}
+            <option value="{{ m }}" {% if modality_filter == m %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <div class="form-check mt-4">
+            <input type="checkbox" name="free_only" value="1" class="form-check-input" id="freeOnly" {% if free_only %}checked{% endif %}>
+            <label class="form-check-label small" for="freeOnly">Free only</label>
+          </div>
+        </div>
+        <div class="col-md-3 text-end">
+          <button type="submit" class="btn btn-dark btn-sm">Filter</button>
+          <a href="{% url 'models_catalog' %}" class="btn btn-outline-secondary btn-sm">Clear</a>
+        </div>
+      </div>
+    </form>
+
+    <!-- Models Table -->
+    {% if models %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Model</th>
+            <th>Provider</th>
+            <th>Modality</th>
+            <th>Context</th>
+            <th>Prompt / 1M tokens</th>
+            <th>Completion / 1M tokens</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in models %}
+          <tr>
+            <td>
+              <a href="{% url 'model_detail' m.provider.slug m.slug|default:m.provider_model_id %}" class="text-decoration-none fw-semibold">{{ m.name }}</a>
+              {% if m.is_free %}<span class="badge bg-success ms-1">Free</span>{% endif %}
+              {% if m.description %}<br><small class="text-muted">{{ m.description|truncatewords:12 }}</small>{% endif %}
+            </td>
+            <td>{{ m.provider.name }}</td>
+            <td><span class="badge bg-light text-dark">{{ m.modality }}</span></td>
+            <td>{% if m.context_length %}{{ m.context_length|floatformat:0 }}{% else %}—{% endif %}</td>
+            <td>{% if m.is_free %}Free{% elif m.price_prompt %}${{ m.price_prompt|floatformat:2 }}{% elif m.input_price_per_1k_units %}${{ m.input_price_per_1k_units|floatformat:4 }} /1k{% else %}—{% endif %}</td>
+            <td>{% if m.is_free %}Free{% elif m.price_completion %}${{ m.price_completion|floatformat:2 }}{% elif m.output_price_per_1k_units %}${{ m.output_price_per_1k_units|floatformat:4 }} /1k{% else %}—{% endif %}</td>
+            <td><a href="{% url 'model_detail' m.provider.slug m.slug|default:m.provider_model_id %}" class="btn btn-outline-dark btn-sm">Details</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p class="fs-5">No models found</p>
+      <p class="text-muted">Try adjusting your filters or <a href="{% url 'models_catalog' %}">clear all filters</a>.</p>
+    </div>
+    {% endif %}
+  </div>
+</main>
+
+<footer class="py-3 border-top bg-white">
+  <div class="container d-flex justify-content-between small text-muted">
+    <span>© 2025 AIGateway UZ</span>
+    <div>
+      <a href="{% url 'legal:terms' %}" class="text-muted me-3">Terms</a>
+      <a href="{% url 'legal:privacy' %}" class="text-muted">Privacy</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}

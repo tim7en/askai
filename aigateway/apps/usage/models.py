@@ -19,6 +19,15 @@ class UsageEvent(models.Model):
     cost_usd_estimate = models.DecimalField(max_digits=10, decimal_places=6, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     meta_json = models.JSONField(default=dict, blank=True)
+    api_key_id = models.UUIDField(null=True, blank=True)
+    provider_id = models.UUIDField(null=True, blank=True)
+    endpoint_id = models.UUIDField(null=True, blank=True)
+    reasoning_tokens = models.IntegerField(default=0)
+    cached_tokens = models.IntegerField(default=0)
+    status = models.CharField(max_length=20, default="success", help_text="success or fail")
+    fallback_chain = models.JSONField(default=list, blank=True)
+    latency_ms = models.IntegerField(null=True, blank=True)
+    currency = models.CharField(max_length=10, default="USD")
 
     class Meta:
         db_table = "usage_usageevent"

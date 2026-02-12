@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% block title %}Pricing – AIGateway UZ{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+    <div>
+      <a href="{% url 'landing' %}" class="btn btn-link btn-sm text-dark">Home</a>
+      <a href="{% url 'pricing' %}" class="btn btn-link btn-sm text-dark fw-semibold">Pricing</a>
+      <a href="{% url 'models_catalog' %}" class="btn btn-link btn-sm text-dark">Models</a>
+      <a href="{% url 'accounts:login' %}" class="btn btn-outline-dark btn-sm me-2">Log in</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-dark btn-sm">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow-1">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold">Simple, transparent pricing</h1>
+      <p class="lead text-muted">Access {{ model_count }} models from {{ provider_count }} providers. Start free, scale as you grow.</p>
+    </div>
+
+    <!-- Plan Cards -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">Free</h5>
+            <div class="display-6 fw-bold mb-2">$0<small class="fs-6 text-muted fw-normal">/month</small></div>
+            <p class="text-muted small">Get started with basic models at no cost.</p>
+            <ul class="list-unstyled small mb-4">
+              <li class="mb-2">✓ 50 requests/day</li>
+              <li class="mb-2">✓ 20 RPM rate limit</li>
+              <li class="mb-2">✓ Basic models only</li>
+              <li class="mb-2">✗ No API key management</li>
+              <li class="mb-2">✗ No activity logs</li>
+            </ul>
+            <a href="{% url 'accounts:signup' %}" class="btn btn-outline-dark mt-auto">Get started</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-dark">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex align-items-center mb-1">
+              <h5 class="card-title fw-bold mb-0">Pay-as-you-go</h5>
+              <span class="badge bg-dark ms-2">Popular</span>
+            </div>
+            <div class="display-6 fw-bold mb-2">Credits<small class="fs-6 text-muted fw-normal">-based</small></div>
+            <p class="text-muted small">Platform fee applies on top of model costs.</p>
+            <ul class="list-unstyled small mb-4">
+              <li class="mb-2">✓ Full model access</li>
+              <li class="mb-2">✓ Activity logs &amp; export</li>
+              <li class="mb-2">✓ API key management</li>
+              <li class="mb-2">✓ Budgets &amp; spending caps</li>
+              <li class="mb-2">✓ Prompt caching</li>
+              <li class="mb-2">✓ Auto-routing</li>
+            </ul>
+            <a href="{% url 'accounts:signup' %}" class="btn btn-dark mt-auto">Start now</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-bold">Enterprise</h5>
+            <div class="display-6 fw-bold mb-2">Custom</div>
+            <p class="text-muted small">Tailored pricing for large organizations.</p>
+            <ul class="list-unstyled small mb-4">
+              <li class="mb-2">✓ SSO / SAML</li>
+              <li class="mb-2">✓ SLAs</li>
+              <li class="mb-2">✓ Dedicated rate limits</li>
+              <li class="mb-2">✓ Invoicing</li>
+              <li class="mb-2">✓ Admin controls</li>
+              <li class="mb-2">✓ Data policy routing</li>
+            </ul>
+            <a href="mailto:sales@aigateway.uz" class="btn btn-outline-dark mt-auto">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <h3 class="fw-bold text-center mb-4">Feature comparison</h3>
+    <div class="table-responsive mb-5">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th class="text-start">Feature</th>
+            <th>Free</th>
+            <th>Pay-as-you-go</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="text-start">Platform Fee</td><td>None</td><td>Per-request markup</td><td>Custom</td></tr>
+          <tr><td class="text-start">Model Count</td><td>Basic models</td><td>{{ model_count }} models</td><td>{{ model_count }}+ models</td></tr>
+          <tr><td class="text-start">Provider Count</td><td>Limited</td><td>{{ provider_count }} providers</td><td>{{ provider_count }}+ providers</td></tr>
+          <tr><td class="text-start">Activity Logs &amp; Export</td><td>✗</td><td>✓</td><td>✓</td></tr>
+          <tr><td class="text-start">Auto-routing</td><td>✗</td><td>✓</td><td>✓</td></tr>
+          <tr><td class="text-start">Budgets</td><td>✗</td><td>✓</td><td>✓</td></tr>
+          <tr><td class="text-start">Prompt Caching</td><td>✗</td><td>✓</td><td>✓</td></tr>
+          <tr><td class="text-start">Management API Key</td><td>✗</td><td>✓</td><td>✓</td></tr>
+          <tr><td class="text-start">Admin Controls</td><td>✗</td><td>✗</td><td>✓</td></tr>
+          <tr><td class="text-start">Data Policy Routing</td><td>✗</td><td>✗</td><td>✓</td></tr>
+          <tr><td class="text-start">SSO / SAML</td><td>✗</td><td>✗</td><td>✓</td></tr>
+          <tr><td class="text-start">SLAs</td><td>✗</td><td>✗</td><td>✓</td></tr>
+          <tr><td class="text-start">Rate Limits</td><td>20 RPM / 50 req/day</td><td>Standard</td><td>Dedicated</td></tr>
+          <tr><td class="text-start">Payment Methods</td><td>—</td><td>Credit card / UZS</td><td>Invoicing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Rate Limits -->
+    <h3 class="fw-bold text-center mb-4">Rate limits</h3>
+    <div class="row g-4 mb-5 justify-content-center">
+      <div class="col-md-4">
+        <div class="card text-center p-4">
+          <h5 class="fw-semibold">Free</h5>
+          <p class="display-6 fw-bold mb-1">50</p>
+          <p class="text-muted small mb-1">requests/day</p>
+          <p class="text-muted small">20 RPM</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center p-4">
+          <h5 class="fw-semibold">Pay-as-you-go</h5>
+          <p class="display-6 fw-bold mb-1">Standard</p>
+          <p class="text-muted small">Based on plan usage</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center p-4">
+          <h5 class="fw-semibold">Enterprise</h5>
+          <p class="display-6 fw-bold mb-1">Custom</p>
+          <p class="text-muted small">Dedicated limits per agreement</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h3 class="fw-bold text-center mb-4">Frequently asked questions</h3>
+    <div class="accordion mb-5" id="faqAccordion">
+      <!-- Billing -->
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqBilling1">How does billing work?</button></h2>
+        <div id="faqBilling1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Pay-as-you-go users purchase credits. We charge a platform fee on top of provider model costs. You only pay for what you use. Enterprise customers receive custom invoicing.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqBilling2">Can I pay in local currency (UZS)?</button></h2>
+        <div id="faqBilling2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Yes. Pay-as-you-go supports credit card payments including UZS-denominated cards. Enterprise plans support direct invoicing in UZS.</div>
+        </div>
+      </div>
+      <!-- Usage & Limits -->
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqUsage1">What happens when I hit my rate limit?</button></h2>
+        <div id="faqUsage1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Requests exceeding your rate limit will receive a 429 status code. You can retry after a short wait. Upgrade your plan for higher limits.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqUsage2">Can I set spending caps?</button></h2>
+        <div id="faqUsage2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Yes. Pay-as-you-go and Enterprise plans support monthly budgets with optional hard caps that stop requests when the limit is reached.</div>
+        </div>
+      </div>
+      <!-- Routing & Latency -->
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqRouting1">How does auto-routing work?</button></h2>
+        <div id="faqRouting1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Our router selects the best model and provider based on your task type, cost preferences, and available credentials. You can also pin a specific provider or model.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqRouting2">Does the gateway add latency?</button></h2>
+        <div id="faqRouting2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">The gateway adds minimal overhead (typically &lt;50ms). Requests are proxied directly to providers. Streaming is fully supported.</div>
+        </div>
+      </div>
+      <!-- Privacy & Security -->
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqPrivacy1">Is my data stored?</button></h2>
+        <div id="faqPrivacy1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">We log metadata (token counts, costs, latency) but do not store prompt or completion content by default. Enterprise plans can configure data retention policies.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqPrivacy2">How are API keys secured?</button></h2>
+        <div id="faqPrivacy2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">BYO API keys are encrypted at rest using Fernet symmetric encryption. Keys are never logged or exposed in the UI after storage.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="py-3 border-top bg-white">
+  <div class="container d-flex justify-content-between small text-muted">
+    <span>© 2025 AIGateway UZ</span>
+    <div>
+      <a href="{% url 'legal:terms' %}" class="text-muted me-3">Terms</a>
+      <a href="{% url 'legal:privacy' %}" class="text-muted">Privacy</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}

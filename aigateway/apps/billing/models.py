@@ -1,5 +1,8 @@
+import hashlib
+import secrets
 import uuid
 
+from django.conf import settings
 from django.db import models
 
 
@@ -84,3 +87,125 @@ class PaymentTransaction(models.Model):
 
     def __str__(self):
         return f"Payment {self.id} – {self.status}"
+
+
+class CreditLedgerEntry(models.Model):
+    class EntryType(models.TextChoices):
+        TOPUP = "TOPUP", "Top-up"
+        SPEND = "SPEND", "Spend"
+        ADJUSTMENT = "ADJUSTMENT", "Adjustment"
+        REFUND = "REFUND", "Refund"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        "orgs.Organization", on_delete=models.CASCADE, related_name="credit_ledger_entries"
+    )
+    entry_type = models.CharField(max_length=20, choices=EntryType.choices)
+    amount = models.DecimalField(max_digits=12, decimal_places=6)
+    balance_after = models.DecimalField(max_digits=12, decimal_places=6)
+    description = models.CharField(max_length=500, blank=True, default="")
+    reference_id = models.CharField(max_length=200, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "billing_creditledgerentry"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.entry_type} {self.amount} (org={self.organization_id})"
+
+
+class ApiKey(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        "orgs.Organization", on_delete=models.CASCADE, related_name="api_keys"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="api_keys"
+    )
+    name = models.CharField(max_length=200, default="Default")
+    prefix = models.CharField(max_length=8)
+    hashed_key = models.CharField(max_length=128, unique=True)
+    is_active = models.BooleanField(default=True)
+    credit_limit = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rate_limit_rpm = models.IntegerField(null=True, blank=True)
+    rate_limit_rpd = models.IntegerField(null=True, blank=True)
+    is_free_tier = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "billing_apikey"
+
+    def __str__(self):
+        return f"{self.name} ({self.prefix}…)"
+
+    @classmethod
+    def create_key(cls, organization, user=None, name="Default"):
+        plaintext_key = "sk-or-v1-" + secrets.token_hex(32)
+        prefix = plaintext_key[:8]
+        hashed_key = hashlib.sha256(plaintext_key.encode()).hexdigest()
+        instance = cls.objects.create(
+            organization=organization,
+            user=user,
+            name=name,
+            prefix=prefix,
+            hashed_key=hashed_key,
+        )
+        return instance, plaintext_key
+
+    @classmethod
+    def lookup(cls, plaintext_key):
+        hashed_key = hashlib.sha256(plaintext_key.encode()).hexdigest()
+        try:
+            return cls.objects.get(hashed_key=hashed_key)
+        except cls.DoesNotExist:
+            return None
+
+
+class ManagementKey(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(
+        "orgs.Organization", on_delete=models.CASCADE, related_name="management_keys"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="management_keys"
+    )
+    name = models.CharField(max_length=200, default="Default")
+    prefix = models.CharField(max_length=8)
+    hashed_key = models.CharField(max_length=128, unique=True)
+    is_active = models.BooleanField(default=True)
+    credit_limit = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rate_limit_rpm = models.IntegerField(null=True, blank=True)
+    rate_limit_rpd = models.IntegerField(null=True, blank=True)
+    is_free_tier = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_used_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = "billing_managementkey"
+
+    def __str__(self):
+        return f"{self.name} ({self.prefix}…)"
+
+    @classmethod
+    def create_key(cls, organization, user=None, name="Default"):
+        plaintext_key = "sk-or-mgmt-" + secrets.token_hex(32)
+        prefix = plaintext_key[:8]
+        hashed_key = hashlib.sha256(plaintext_key.encode()).hexdigest()
+        instance = cls.objects.create(
+            organization=organization,
+            user=user,
+            name=name,
+            prefix=prefix,
+            hashed_key=hashed_key,
+        )
+        return instance, plaintext_key
+
+    @classmethod
+    def lookup(cls, plaintext_key):
+        hashed_key = hashlib.sha256(plaintext_key.encode()).hexdigest()
+        try:
+            return cls.objects.get(hashed_key=hashed_key)
+        except cls.DoesNotExist:
+            return None

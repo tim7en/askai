@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ model.name }} – AIGateway UZ{% endblock %}
+{% block body %}
+<nav class="navbar navbar-light bg-white border-bottom">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">⚡ AIGateway UZ</a>
+    <div>
+      <a href="{% url 'landing' %}" class="btn btn-link btn-sm text-dark">Home</a>
+      <a href="{% url 'pricing' %}" class="btn btn-link btn-sm text-dark">Pricing</a>
+      <a href="{% url 'models_catalog' %}" class="btn btn-link btn-sm text-dark">Models</a>
+      <a href="{% url 'accounts:login' %}" class="btn btn-outline-dark btn-sm me-2">Log in</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-dark btn-sm">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow-1">
+  <div class="container py-5">
+    <a href="{% url 'models_catalog' %}" class="text-decoration-none small mb-3 d-inline-block">← Back to models</a>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <h1 class="fw-bold">{{ model.name }}</h1>
+        <p class="text-muted">
+          by <strong>{{ model.provider.name }}</strong>
+          {% if model.is_free %}<span class="badge bg-success ms-2">Free</span>{% endif %}
+          <span class="badge bg-light text-dark ms-1">{{ model.modality }}</span>
+        </p>
+        {% if model.description %}
+        <p>{{ model.description }}</p>
+        {% endif %}
+
+        <!-- Model Info -->
+        <div class="card mb-4">
+          <div class="card-header fw-semibold">Model details</div>
+          <div class="card-body">
+            <table class="table table-sm mb-0">
+              <tr><td class="text-muted" style="width:200px">Provider Model ID</td><td><code>{{ model.provider_model_id }}</code></td></tr>
+              <tr><td class="text-muted">Modality</td><td>{{ model.modality }}</td></tr>
+              <tr><td class="text-muted">Context Length</td><td>{% if model.context_length %}{{ model.context_length|floatformat:0 }} tokens{% else %}—{% endif %}</td></tr>
+              {% if model.supported_parameters %}
+              <tr><td class="text-muted">Supported Parameters</td><td>{% for p in model.supported_parameters %}<span class="badge bg-light text-dark me-1">{{ p }}</span>{% endfor %}</td></tr>
+              {% endif %}
+            </table>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="card mb-4">
+          <div class="card-header fw-semibold">Pricing</div>
+          <div class="card-body">
+            {% if model.is_free %}
+            <p class="mb-0"><span class="badge bg-success">Free</span> This model is available at no cost.</p>
+            {% else %}
+            <table class="table table-sm mb-0">
+              {% if model.price_prompt %}<tr><td class="text-muted" style="width:200px">Prompt (per token)</td><td>${{ model.price_prompt }}</td></tr>{% endif %}
+              {% if model.price_completion %}<tr><td class="text-muted">Completion (per token)</td><td>${{ model.price_completion }}</td></tr>{% endif %}
+              {% if model.price_request %}<tr><td class="text-muted">Per request</td><td>${{ model.price_request }}</td></tr>{% endif %}
+              {% if model.price_image %}<tr><td class="text-muted">Per image</td><td>${{ model.price_image }}</td></tr>{% endif %}
+              {% if model.price_audio %}<tr><td class="text-muted">Per audio unit</td><td>${{ model.price_audio }}</td></tr>{% endif %}
+              {% if model.price_internal_reasoning %}<tr><td class="text-muted">Internal reasoning (per token)</td><td>${{ model.price_internal_reasoning }}</td></tr>{% endif %}
+              {% if model.price_web_search %}<tr><td class="text-muted">Web search</td><td>${{ model.price_web_search }}</td></tr>{% endif %}
+              {% if model.price_input_cache_read %}<tr><td class="text-muted">Cache read (per token)</td><td>${{ model.price_input_cache_read }}</td></tr>{% endif %}
+              {% if model.price_input_cache_write %}<tr><td class="text-muted">Cache write (per token)</td><td>${{ model.price_input_cache_write }}</td></tr>{% endif %}
+              {% if model.input_price_per_1k_units %}<tr><td class="text-muted">Input (per 1k tokens)</td><td>${{ model.input_price_per_1k_units }}</td></tr>{% endif %}
+              {% if model.output_price_per_1k_units %}<tr><td class="text-muted">Output (per 1k tokens)</td><td>${{ model.output_price_per_1k_units }}</td></tr>{% endif %}
+            </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="py-3 border-top bg-white">
+  <div class="container d-flex justify-content-between small text-muted">
+    <span>© 2025 AIGateway UZ</span>
+    <div>
+      <a href="{% url 'legal:terms' %}" class="text-muted me-3">Terms</a>
+      <a href="{% url 'legal:privacy' %}" class="text-muted">Privacy</a>
+    </div>
+  </div>
+</footer>
+{% endblock %}
