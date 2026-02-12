@@ -1,12 +1,10 @@
 import csv
 import time
 
-from django.contrib.auth.decorators import login_required
 from django.db import models as django_models
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from django.utils import timezone
 
 from aigateway.apps.ai_gateway.models import AIRequest
 from aigateway.apps.ai_gateway.router import route_and_generate
