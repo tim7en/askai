@@ -106,6 +106,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
         "aigateway.apps.api.authentication.OrgTokenAuthentication",
+        "aigateway.apps.api.authentication.ApiKeyAuthentication",
+        "aigateway.apps.api.authentication.ManagementKeyAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
