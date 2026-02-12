@@ -66,3 +66,22 @@ class OrgPolicy(models.Model):
 
     def __str__(self):
         return f"Policy for {self.organization.name}"
+
+
+class RoutingPolicy(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="routing_policies")
+    name = models.CharField(max_length=200, default="Default")
+    provider_allow = models.JSONField(default=list, blank=True, help_text="Allowed provider slugs")
+    provider_deny = models.JSONField(default=list, blank=True, help_text="Denied provider slugs")
+    region_preference = models.CharField(max_length=100, blank=True, default="")
+    weights = models.JSONField(default=dict, blank=True, help_text="Provider slug -> weight mapping")
+    require_no_retention = models.BooleanField(default=False, help_text="Only route to providers with no data retention")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "orgs_routingpolicy"
+
+    def __str__(self):
+        return f"RoutingPolicy: {self.name} (org={self.organization.name})"
