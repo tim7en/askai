@@ -2,6 +2,7 @@ import csv
 import time
 
 from django.contrib.auth.decorators import login_required
+from django.db import models as django_models
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -221,6 +222,73 @@ def settings_view(request):
         return redirect("web:settings")
 
     return render(request, "web/settings.html", {"org": request.org, "policy": policy})
+
+
+def pricing_view(request):
+    """Public pricing page with plan comparison."""
+    from aigateway.apps.providers.models import ProviderModel
+    model_count = ProviderModel.objects.filter(is_enabled=True).count()
+    provider_count = ProviderModel.objects.filter(is_enabled=True).values('provider').distinct().count()
+    return render(request, "web/pricing.html", {
+        "model_count": model_count,
+        "provider_count": provider_count,
+    })
+
+
+def models_catalog_view(request):
+    """Public models catalog page."""
+    from aigateway.apps.providers.models import ProviderModel
+    models = ProviderModel.objects.filter(is_enabled=True).select_related("provider").order_by("provider__slug", "name")
+
+    # Filtering
+    provider_filter = request.GET.get("provider", "")
+    modality_filter = request.GET.get("modality", "")
+    free_only = request.GET.get("free_only", "") == "1"
+    search = request.GET.get("search", "")
+
+    if provider_filter:
+        models = models.filter(provider__slug=provider_filter)
+    if modality_filter:
+        models = models.filter(modality=modality_filter)
+    if free_only:
+        models = models.filter(is_free=True)
+    if search:
+        models = models.filter(
+            django_models.Q(name__icontains=search) | django_models.Q(description__icontains=search)
+        )
+
+    # Get unique providers and modalities for filter dropdowns
+    from aigateway.apps.providers.models import Provider
+    providers = Provider.objects.filter(is_enabled=True)
+    modalities = ProviderModel.objects.filter(is_enabled=True).values_list("modality", flat=True).distinct()
+
+    return render(request, "web/models_catalog.html", {
+        "models": models,
+        "providers": providers,
+        "modalities": modalities,
+        "provider_filter": provider_filter,
+        "modality_filter": modality_filter,
+        "free_only": free_only,
+        "search": search,
+    })
+
+
+def model_detail_view(request, provider_slug, model_slug):
+    """Public model detail page."""
+    from aigateway.apps.providers.models import ProviderModel
+    from django.db.models import Q
+    model = ProviderModel.objects.filter(
+        is_enabled=True,
+        provider__slug=provider_slug,
+    ).filter(
+        Q(slug=model_slug) | Q(provider_model_id=model_slug)
+    ).select_related("provider").first()
+
+    if not model:
+        from django.http import Http404
+        raise Http404("Model not found")
+
+    return render(request, "web/model_detail.html", {"model": model})
 
 
 def terms_view(request):
